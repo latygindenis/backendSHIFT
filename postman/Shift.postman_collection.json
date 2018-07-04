@@ -1,0 +1,152 @@
+{
+	"info": {
+		"_postman_id": "fa61581f-1e2a-401d-83cc-a3301344b30e",
+		"name": "Shift",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "/api/v001/books/",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"url": {
+					"raw": "http://localhost:8081/api/v001/books/",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8081",
+					"path": [
+						"api",
+						"v001",
+						"books",
+						""
+					]
+				},
+				"description": "Получение списка книг"
+			},
+			"response": []
+		},
+		{
+			"name": "/api/v001/books/{id}",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"url": {
+					"raw": "http://localhost:8081/api/v001/books/1",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8081",
+					"path": [
+						"api",
+						"v001",
+						"books",
+						"1"
+					]
+				},
+				"description": "Получение книги по id"
+			},
+			"response": []
+		},
+		{
+			"name": "/api/v001/books/{id}",
+			"request": {
+				"method": "PATCH",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"id\": \"1\",\n    \"name\": \"Название 123234234234\",\n    \"author\": \"Автор Авторович\",\n    \"pages\": 12,\n    \"isAvailable\": false,\n    \"genre\": [\n        \"Фантастика\",\n        \"Новый жанр\"\n    ]\n}"
+				},
+				"url": {
+					"raw": "http://localhost:8081/api/v001/books/1",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8081",
+					"path": [
+						"api",
+						"v001",
+						"books",
+						"1"
+					]
+				},
+				"description": "Обновление данных книги по id"
+			},
+			"response": []
+		},
+		{
+			"name": "/api/v001/books/{id}",
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "http://localhost:8081/api/v001/books/1",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8081",
+					"path": [
+						"api",
+						"v001",
+						"books",
+						"1"
+					]
+				},
+				"description": "Удаление книги по id"
+			},
+			"response": []
+		},
+		{
+			"name": "/api/v001/books/{id}",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"name\": \"Название 123234234234\",\n    \"author\": \"Автор Авторович\",\n    \"pages\": 12,\n    \"isAvailable\": false,\n    \"genre\": [\n        \"Фантастика\",\n        \"Новый жанр\"\n    ]\n}"
+				},
+				"url": {
+					"raw": "http://localhost:8081/api/v001/books",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8081",
+					"path": [
+						"api",
+						"v001",
+						"books"
+					]
+				},
+				"description": "Создание новой записи"
+			},
+			"response": []
+		}
+	]
+}
