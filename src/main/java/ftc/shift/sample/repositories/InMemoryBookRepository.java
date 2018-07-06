@@ -15,7 +15,7 @@ public class InMemoryBookRepository implements BookRepository {
 
   public InMemoryBookRepository() {
     bookCache.put("1", new Book("1", "Название 1", "Автор Авторович", 12,
-        false, Collections.singletonList("Фантастика")));
+        false, Collections.singletonList("Фантастика") ));
     bookCache.put("2", new Book("2", "Название 2", "Автор Писателевич", 1000,
         true, Collections.singletonList("Детектив")));
   }

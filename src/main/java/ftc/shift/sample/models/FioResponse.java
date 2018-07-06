@@ -9,20 +9,4 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class FioResponse {
     Integer result;
-
-    public FioResponse(Integer result) {
-        this.result = result;
-    }
-
-    public FioResponse() {
-    }
-
-    public Integer getResult() {
-        return result;
-    }
-
-    public void setResult(Integer result) {
-        this.result = result;
-    }
-
 }

@@ -3,11 +3,16 @@ package ftc.shift.sample.api;
 
 import ftc.shift.sample.models.FioRequest;
 import ftc.shift.sample.models.FioResponse;
+import ftc.shift.sample.repositories.FireRepository;
+import ftc.shift.sample.services.AndroidPushNotificationsService;
 import ftc.shift.sample.services.BookService;
 import ftc.shift.sample.models.Book;
+import ftc.shift.sample.services.Push;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.util.Collection;
 import java.util.Random;
 
@@ -15,6 +20,8 @@ import java.util.Random;
 public class BooksController {
 
   private static final String BOOKS_PATH = Resources.API_PREFIX + "fio";
+  Integer buf =0;
+  Random random = new Random();
 
   @Autowired
   private BookService service;
@@ -43,17 +50,44 @@ public class BooksController {
     return response;
   }
 
-  @PostMapping()
+  @PostMapping("api/check")
   public @ResponseBody
-  BaseResponse<FioResponse> createBook(@RequestBody FioRequest fioRequest) throws InterruptedException {
-    System.out.println("Запрос");
-    Thread.currentThread().sleep(10000);
-    BaseResponse<FioResponse> response = new BaseResponse<>();
-    FioResponse fioResponse= new FioResponse();
-    fioResponse.setResult(2);
-    response.setData(fioResponse);
-    return response;
+  BaseResponse<FioResponse> checkFIO(@RequestBody FioRequest fioRequest) throws IOException {
+      System.out.println(buf++);
+      BaseResponse<FioResponse> response = new BaseResponse<>();
+      FioResponse fioResponse = new FioResponse();
+      buf = random.nextInt(3); //Отправка на ML
+
+      if (buf < 2){
+        fioResponse.setResult(buf);
+        response.setData(fioResponse);
+        new FireRepository();
+        new Push().createPush();
+
+      } else {
+        //Место для пуша на ассесоров
+        new FireRepository();
+        new Push().createPush();
+      }
+      return response;
   }
+
+//  @PostMapping("/api/checkcurtask")  // Проверка каждые 5 секунд
+//  public @ResponseBody
+//  BaseResponse<FioResponse> checkCurTask(@RequestBody FioRequest fioRequest){
+//
+//      //Проверка счетчика на firebase
+//      //Если счетчик в базе равен пяти то ответить
+//
+//  }
+
+//  @PostMapping("api/sendres")
+//  public @ResponseBody
+//  BaseResponse<
+//          >
+
+
+
 
   @DeleteMapping(BOOKS_PATH + "/{id}")
   public @ResponseBody

@@ -11,6 +11,9 @@ buildscript {
 
 
 }
+plugins {
+    id 'net.ltgt.apt' version '0.10'
+}
 
 apply plugin: 'java'
 apply plugin: 'org.springframework.boot'
@@ -19,12 +22,17 @@ group = 'ftc.shift'
 version = '0.0.1'
 sourceCompatibility = 1.8
 
+
 repositories {
     mavenCentral()
 }
 
 
+
 dependencies {
-    compileOnly 'org.projectlombok:lombok:1.16.18'
+    compileOnly 'org.projectlombok:lombok:1.18.0'
+    apt "org.projectlombok:lombok:1.18.0"
     compile("org.springframework.boot:spring-boot-starter-web")
+    compile("com.googlecode.json-simple:json-simple:1.1.1")
+    implementation 'com.google.firebase:firebase-admin:6.2.0'
 }
