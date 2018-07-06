@@ -22,9 +22,13 @@ public class BooksController {
   private static final String BOOKS_PATH = Resources.API_PREFIX + "fio";
   Integer buf =0;
   Random random = new Random();
+  FireRepository fireRepository = new FireRepository();
 
   @Autowired
   private BookService service;
+
+  public BooksController() throws IOException {
+  }
 
   @GetMapping(BOOKS_PATH + "/{id}")
   public @ResponseBody
@@ -53,7 +57,6 @@ public class BooksController {
   @PostMapping("api/check")
   public @ResponseBody
   BaseResponse<FioResponse> checkFIO(@RequestBody FioRequest fioRequest) throws IOException {
-      System.out.println(buf++);
       BaseResponse<FioResponse> response = new BaseResponse<>();
       FioResponse fioResponse = new FioResponse();
       buf = random.nextInt(3); //Отправка на ML
@@ -61,12 +64,36 @@ public class BooksController {
       if (buf < 2){
         fioResponse.setResult(buf);
         response.setData(fioResponse);
-        new FireRepository().createTask();
+
+      fireRepository.checkCurTask("-LGhpXA--bDaB_ZBN-f9", new FireRepository.Callback() {
+          @Override
+          public void onSucess(Object count) {
+             System.out.println("Осталось: " + count);
+          }
+
+          @Override
+          public void onError(Throwable ex) {
+
+          }
+        });
+
+
+
         new Push().createPush();
 
       } else {
         //Место для пуша на ассесоров
-        new FireRepository().createTask();
+        fireRepository.checkCurTask("-LGhpXA--bDaB_ZBN-f9", new FireRepository.Callback() {
+          @Override
+          public void onSucess(Object count) {
+            System.out.println("Осталось: " + count);
+          }
+
+          @Override
+          public void onError(Throwable ex) {
+
+          }
+        });
         new Push().createPush();
       }
       return response;

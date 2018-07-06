@@ -31,22 +31,31 @@ public class FireRepository implements FireBaseRepository {
     }
 
     @Override
-    public Object checkCurTask() {
-        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("tasks");
-        Object curTasks = null;
+    public int checkCurTask(String id, Callback callback) {
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("tasks/" + id + "/count");
+        final Object[] count = {-1};
+
         ref.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                Object document = dataSnapshot.getValue();
-                System.out.println(document);
+                callback.onSucess(dataSnapshot.getValue());
             }
 
             @Override
             public void onCancelled(DatabaseError error) {
+
             }
+
+
         });
-        System.out.println(curTasks);
-        return curTasks;
+
+
+        return (int) count[0];
+}
+
+    public interface  Callback {
+        void onSucess (Object count);
+        void onError (Throwable ex);
     }
 
 
