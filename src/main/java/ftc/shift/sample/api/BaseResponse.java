@@ -1,9 +1,6 @@
 package ftc.shift.sample.api;
 
-import ftc.shift.sample.models.Book;
 import lombok.Data;
-
-import javax.xml.ws.Response;
 
 /**
  * Базовая модель ответа сервера

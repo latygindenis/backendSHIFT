@@ -8,5 +8,6 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 public class FioResponse {
+    String idNewTask;
     Integer result;
 }

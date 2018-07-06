@@ -1,6 +1,6 @@
 package ftc.shift.sample.repositories;
 
 public interface FireBaseRepository{
-    String createTask(); // Возвращает id
-    int checkCurTask(String id, FireRepository.Callback callback); //
+    String createTask(String country, String first, String second, String third); // Возвращает id
+    void checkCurTask(String id, FireRepository.Callback callback); //
 }

@@ -17,8 +17,6 @@ public class AndroidPushNotificationsService {
 	private static final String FIREBASE_API_URL = "https://fcm.googleapis.com/fcm/send";
 
 
-
-
 	@Async
 	public CompletableFuture<String> send (String body) {
         System.out.println(body);

@@ -1,5 +1,6 @@
 package ftc.shift.sample.services;
 
+import ftc.shift.sample.models.FioRequest;
 import org.json.simple.JSONObject;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -10,8 +11,16 @@ import java.util.concurrent.ExecutionException;
 public class Push {
 
     private final String TOPIC = "JavaSampleApproach";
-    String name="Латыгин Денис Сергеевич";
+    String name;
     String title = "Check!";
+    String idNewTask;
+    FioRequest fioRequest;
+
+    public Push(String idNewTask, FioRequest fioRequest) {
+        this.fioRequest = fioRequest;
+        name = fioRequest.getFirst() + " " + fioRequest.getSecond() + " " + fioRequest.getThird();
+        this.idNewTask = idNewTask;
+    }
 
     public ResponseEntity<String> createPush() {
 
@@ -24,9 +33,10 @@ public class Push {
         notification.put("body",  name);
 
         JSONObject data = new JSONObject();
-        data.put("Key-1", "Denis");
-        data.put("Key-2", "Sergeevich");
-        data.put("Key-3", "Latygin");
+        data.put("first", fioRequest.getFirst());
+        data.put("second", fioRequest.getSecond());
+        data.put("third", fioRequest.getThird());
+        data.put("id", idNewTask);
 
         body.put("notification", notification);
         body.put("data", data);
