@@ -4,9 +4,9 @@ import com.google.auth.oauth2.GoogleCredentials;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
 import com.google.firebase.database.*;
+import ftc.shift.sample.models.Task;
 
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 
 public class FireRepository implements FireBaseRepository {
@@ -19,10 +19,21 @@ public class FireRepository implements FireBaseRepository {
                 .build();
 
         FirebaseApp.initializeApp(options);
+    }
 
-// As an admin, the app has access to read and write all data, regardless of Security Rules
-        DatabaseReference ref = FirebaseDatabase.getInstance()
-                .getReference("restricted_access/secret_document");
+    @Override
+    public String createTask() {
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("tasks");
+        DatabaseReference taskId = ref.push();
+        Task task = new Task(1, "Russia", "Латыгин", "Денис", "Сергеевич", taskId.getKey());
+        taskId.setValueAsync(task);
+        return null;
+    }
+
+    @Override
+    public Object checkCurTask() {
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("tasks");
+        Object curTasks = null;
         ref.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -34,15 +45,9 @@ public class FireRepository implements FireBaseRepository {
             public void onCancelled(DatabaseError error) {
             }
         });
+        System.out.println(curTasks);
+        return curTasks;
     }
 
-    @Override
-    public String createTask() {
-        return null;
-    }
 
-    @Override
-    public void checkCurTask() {
-
-    }
 }

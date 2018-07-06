@@ -61,12 +61,12 @@ public class BooksController {
       if (buf < 2){
         fioResponse.setResult(buf);
         response.setData(fioResponse);
-        new FireRepository();
+        new FireRepository().createTask();
         new Push().createPush();
 
       } else {
         //Место для пуша на ассесоров
-        new FireRepository();
+        new FireRepository().createTask();
         new Push().createPush();
       }
       return response;
