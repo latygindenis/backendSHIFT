@@ -4,10 +4,13 @@ import com.google.auth.oauth2.GoogleCredentials;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
 import com.google.firebase.database.*;
+import ftc.shift.sample.models.FioResponse;
 import ftc.shift.sample.models.Task;
 
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.lang.reflect.Array;
+import java.util.ArrayList;
 
 public class FireRepository implements FireBaseRepository {
     public FireRepository() throws IOException {
@@ -30,27 +33,42 @@ public class FireRepository implements FireBaseRepository {
         return taskId.getKey();
     }
 
-    @Override
-    public void checkCurTask(String id, Callback callback) {
-        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("tasks/" + id + "/count");
 
+
+    @Override
+    public void checkCurTask(FioResponse fioResponse) {
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("tasks").child(fioResponse.getIdNewTask()).child("accs");
         ref.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                callback.onSucess(dataSnapshot.getValue());
+                int badFIOcount = 0, goodFIOcount = 0;
+                if ( dataSnapshot.getChildrenCount() < 5 ){
+                    fioResponse.setResult(2);
+                } else {
+                    for(DataSnapshot i:dataSnapshot.getChildren()){
+                        if (i.getValue(Integer.class) == 0){
+                            badFIOcount++;
+                        } else {
+                            goodFIOcount++;
+                        }
+                    }
+                    DatabaseReference delReef = FirebaseDatabase.getInstance().getReference().child("tasks").child(fioResponse.getIdNewTask());
+                    delReef.removeValue((error, ref1) -> { }); // Удаление записи
+                }
+                if (badFIOcount > goodFIOcount){
+                    fioResponse.setResult(0);
+                } else {
+                    fioResponse.setResult(1);
+                }
+                fioResponse.setReceived(true);
             }
 
             @Override
             public void onCancelled(DatabaseError error) {
-
+                System.out.println("Error!");
             }
         });
 }
-
-    public interface Callback {
-        void onSucess (Object count);
-        void onError (Throwable ex);
-    }
 
 
 }

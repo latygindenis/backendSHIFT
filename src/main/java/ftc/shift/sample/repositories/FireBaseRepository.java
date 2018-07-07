@@ -1,6 +1,8 @@
 package ftc.shift.sample.repositories;
 
+import ftc.shift.sample.models.FioResponse;
+
 public interface FireBaseRepository{
     String createTask(String country, String first, String second, String third); // Возвращает id
-    void checkCurTask(String id, FireRepository.Callback callback); //
+    void checkCurTask(FioResponse fioResponse);
 }

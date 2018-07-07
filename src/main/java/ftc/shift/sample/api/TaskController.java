@@ -10,12 +10,13 @@ import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 import java.util.Random;
+import java.util.concurrent.*;
 
 @RestController
 public class TaskController {
 
   private static final String TASK_PATH = Resources.API_PREFIX ;
-  Integer buf =1;
+  Integer buf =2;
   Random random = new Random();
   FireRepository fireRepository = new FireRepository();
 
@@ -29,6 +30,7 @@ public class TaskController {
   BaseResponse<FioResponse> checkFIO(@RequestBody FioRequest fioRequest)  {
       BaseResponse<FioResponse> response = new BaseResponse<>();
       FioResponse fioResponse = new FioResponse();
+      System.out.println("Запрос!");
 
     //  buf = random.nextInt(3); //Отправка на ML
 
@@ -48,17 +50,21 @@ public class TaskController {
 
     @PostMapping(TASK_PATH + "/check_cur_task/") //Проверка готовности задачи
     public @ResponseBody
-    BaseResponse<FioResponse> checkCurTask(@RequestBody FioRequest fioRequest)  {
-
+    BaseResponse<FioResponse> checkCurTask(@RequestBody FioResponse fioResponse){
         BaseResponse<FioResponse> response = new BaseResponse<>();
-        FioResponse fioResponse = new FioResponse();
+        fireRepository.checkCurTask(fioResponse);
+        while (!fioResponse.getReceived()) {
 
+        }
+        fioResponse.setReceived(null);
+        response.setData(fioResponse);
         return response;
     }
 
     @PostMapping(TASK_PATH + "/update_cur_task/") //Проверка готовности задачи
     public @ResponseBody
     BaseResponse<FioResponse> updateCurTask(@RequestBody FioRequest fioRequest)  {
+
 
 
         BaseResponse<FioResponse> response = new BaseResponse<>();

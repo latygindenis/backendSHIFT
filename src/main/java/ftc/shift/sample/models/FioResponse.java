@@ -10,4 +10,5 @@ import lombok.NoArgsConstructor;
 public class FioResponse {
     String idNewTask;
     Integer result;
+    Boolean received = false;
 }
