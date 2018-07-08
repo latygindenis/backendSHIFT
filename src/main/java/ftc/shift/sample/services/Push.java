@@ -11,10 +11,10 @@ import java.util.concurrent.ExecutionException;
 public class Push {
 
     private final String TOPIC = "JavaSampleApproach";
-    String name;
+    private String name;
     String title = "Check!";
-    String idNewTask;
-    FioRequest fioRequest;
+    private String idNewTask;
+    private FioRequest fioRequest;
 
     public Push(String idNewTask, FioRequest fioRequest) {
         this.fioRequest = fioRequest;
@@ -28,17 +28,12 @@ public class Push {
         body.put("to", "/topics/" + TOPIC);
         body.put("priority", "high");
 
-        JSONObject notification = new JSONObject();
-        notification.put("title", title);
-        notification.put("body",  name);
-
         JSONObject data = new JSONObject();
         data.put("first", fioRequest.getFirst());
         data.put("second", fioRequest.getSecond());
         data.put("third", fioRequest.getThird());
         data.put("id", idNewTask);
 
-        body.put("notification", notification);
         body.put("data", data);
         System.out.println(body);
 

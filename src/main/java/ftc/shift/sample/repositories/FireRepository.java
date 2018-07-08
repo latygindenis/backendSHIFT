@@ -10,8 +10,12 @@ import ftc.shift.sample.models.Task;
 
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class FireRepository implements FireBaseRepository {
+    HashMap<String, Integer> listOfCurTaskAccessors;
 
     public FireRepository() throws IOException {
         FileInputStream serviceAccount = new FileInputStream("src\\main\\resources\\shift-d39fd-firebase-adminsdk-yvm27-01e0791aa1.json");
@@ -34,7 +38,6 @@ public class FireRepository implements FireBaseRepository {
     }
 
 
-
     @Override
     public void checkCurTask(FioResponse fioResponse) {
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("tasks").child(fioResponse.getIdNewTask()).child("accs");
@@ -42,31 +45,31 @@ public class FireRepository implements FireBaseRepository {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 int badFIOcount = 0, goodFIOcount = 0;
-                if ( dataSnapshot.getChildrenCount() < 5 ){
+                listOfCurTaskAccessors = new HashMap<>();
+                if (dataSnapshot.getChildrenCount() < 3) {
                     fioResponse.setResult(2);
                 } else {
-                    for(DataSnapshot i:dataSnapshot.getChildren()){
-                        if (i.getValue(Integer.class) == 0){
+                    for (DataSnapshot i : dataSnapshot.getChildren()) {
+                        listOfCurTaskAccessors.put(i.getKey(), i.getValue(Integer.class));
+                        if (i.getValue(Integer.class) == 0) {
                             badFIOcount++;
                         } else {
                             goodFIOcount++;
                         }
                     }
-                    if (badFIOcount > goodFIOcount){
+
+                    if (badFIOcount > goodFIOcount) {
                         fioResponse.setResult(0);
-                        //updateBlackList();
+                        updateRate(0);
                     } else {
                         fioResponse.setResult(1);
-                       // updateWhiteList();
+                        updateRate(1);
                     }
 
-                    updateStaticstics();
                     DatabaseReference delReef = FirebaseDatabase.getInstance().getReference().child("tasks").child(fioResponse.getIdNewTask());
-                    delReef.removeValue((error, ref1) -> { }); // Удаление записи
+                    delReef.removeValue((error, ref1) -> {
+                    }); // Удаление записи
                 }
-
-
-
                 fioResponse.setReceived(true);
             }
 
@@ -77,7 +80,33 @@ public class FireRepository implements FireBaseRepository {
         });
     }
 
-    public void checkBlackWhiteLists(FioRequest fioRequest){ //Проверка в черно-белых списках
+    private void updateRate(Integer rightAnswer) {
+        DatabaseReference accRef = FirebaseDatabase.getInstance().getReference().child("accs");
+        accRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot snapshot) {
+                for(DataSnapshot rateSnapshot:snapshot.getChildren()){
+                    if (listOfCurTaskAccessors.get(rateSnapshot.getKey()) == rightAnswer){
+                        Integer wins, amountOfTasks;
+                        System.out.println("id" + rateSnapshot.getKey());
+                        System.out.println("wins:" + rateSnapshot.child("wins").getValue());
+                        wins = rateSnapshot.child("wins").getValue(Integer.class);
+                        amountOfTasks = rateSnapshot.child("amountOfTasks").getValue(Integer.class);
+                        accRef.child(rateSnapshot.getKey()).child("wins").setValueAsync( wins + 1);
+                        accRef.child(rateSnapshot.getKey()).child("amountOfTasks").setValueAsync(amountOfTasks + 1);
+                    }
+
+                }
+            }
+            @Override
+            public void onCancelled(DatabaseError error) {
+
+            }
+        });
+    }
+
+
+    public void checkBlackWhiteLists(FioRequest fioRequest) { //Проверка в черно-белых списках
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("first");
         ref.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -91,13 +120,4 @@ public class FireRepository implements FireBaseRepository {
             }
         });
     }
-    private void updateStaticstics(){};
-    private void updateBlackList(FioResponse fioResponse)
-    {
-        DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("tasks").child(fioResponse.getIdNewTask()).child("accs");
-
-
-
-    };
-    private void updateWhiteList(){};
 }
