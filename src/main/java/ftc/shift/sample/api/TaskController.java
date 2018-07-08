@@ -35,8 +35,16 @@ public class TaskController {
         BaseResponse<FioResponse> response = new BaseResponse<>();
         FioResponse fioResponse = new FioResponse();
         System.out.println("Запрос!");
+        fireRepository.checkBlackWhiteLists(fioRequest);
+        while(!fioRequest.getCheckedInList()){
 
-        result = machineLearningService.getResult(fioRequest);
+        }
+        if (fioRequest.getInListResult() != null){
+            result = fioRequest.getInListResult();
+        } else {
+            result = machineLearningService.getResult(fioRequest);
+        }
+
 
         if (result < 2) {
             fioResponse.setResult(result);

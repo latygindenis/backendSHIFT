@@ -13,4 +13,10 @@ public class FioRequest {
     String second;
     String third;
     String country;
+    Integer inListResult;
+    Boolean checkedInList = false;
+
+    public String toString(){
+        return first + " " + second + " " + third;
+    }
 }

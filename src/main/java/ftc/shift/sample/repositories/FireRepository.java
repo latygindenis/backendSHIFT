@@ -86,7 +86,7 @@ public class FireRepository implements FireBaseRepository {
             @Override
             public void onDataChange(DataSnapshot snapshot) {
                 for(DataSnapshot rateSnapshot:snapshot.getChildren()){
-                    if (listOfCurTaskAccessors.get(rateSnapshot.getKey()) == rightAnswer){
+                    if (listOfCurTaskAccessors.get(rateSnapshot.getKey()).equals(rightAnswer)){
                         Integer wins, amountOfTasks;
                         System.out.println("id" + rateSnapshot.getKey());
                         System.out.println("wins:" + rateSnapshot.child("wins").getValue());
@@ -107,11 +107,15 @@ public class FireRepository implements FireBaseRepository {
 
 
     public void checkBlackWhiteLists(FioRequest fioRequest) { //Проверка в черно-белых списках
-        DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("first");
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("blackwhitelist");
         ref.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot snapshot) {
-
+                if (snapshot.child(fioRequest.toString()).getValue() != null){
+                    fioRequest.setInListResult(snapshot.child(fioRequest.toString()).getValue(Integer.class));
+                    System.out.println(snapshot.child(fioRequest.toString()).getKey());
+                }
+                fioRequest.setCheckedInList(true);
             }
 
             @Override

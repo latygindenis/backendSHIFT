@@ -2,6 +2,7 @@ package ftc.shift.sample.services;
 
 import com.fasterxml.jackson.databind.util.JSONPObject;
 
+import ftc.shift.sample.Tokens;
 import org.json.simple.JSONObject;
 import org.springframework.http.*;
 import org.springframework.scheduling.annotation.Async;
@@ -11,9 +12,11 @@ import org.springframework.web.client.RestTemplate;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
+import static ftc.shift.sample.Tokens.*;
+
 @Service
 public class AndroidPushNotificationsService {
-	private static final String FIREBASE_SERVER_KEY = "key=";
+	private static final String FIREBASE_SERVER_KEY = FIRE_TOKEN;
 	private static final String FIREBASE_API_URL = "https://fcm.googleapis.com/fcm/send";
 
 
@@ -28,6 +31,4 @@ public class AndroidPushNotificationsService {
         String firebaseResponse = restTemplate.postForObject(FIREBASE_API_URL, httpEntity, String.class);
 		return CompletableFuture.completedFuture(firebaseResponse);
 	}
-
-
 }
