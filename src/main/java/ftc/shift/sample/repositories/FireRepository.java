@@ -4,15 +4,15 @@ import com.google.auth.oauth2.GoogleCredentials;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
 import com.google.firebase.database.*;
+import ftc.shift.sample.models.FioRequest;
 import ftc.shift.sample.models.FioResponse;
 import ftc.shift.sample.models.Task;
 
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.lang.reflect.Array;
-import java.util.ArrayList;
 
 public class FireRepository implements FireBaseRepository {
+
     public FireRepository() throws IOException {
         FileInputStream serviceAccount = new FileInputStream("src\\main\\resources\\shift-d39fd-firebase-adminsdk-yvm27-01e0791aa1.json");
 
@@ -52,14 +52,21 @@ public class FireRepository implements FireBaseRepository {
                             goodFIOcount++;
                         }
                     }
+                    if (badFIOcount > goodFIOcount){
+                        fioResponse.setResult(0);
+                        //updateBlackList();
+                    } else {
+                        fioResponse.setResult(1);
+                       // updateWhiteList();
+                    }
+
+                    updateStaticstics();
                     DatabaseReference delReef = FirebaseDatabase.getInstance().getReference().child("tasks").child(fioResponse.getIdNewTask());
                     delReef.removeValue((error, ref1) -> { }); // Удаление записи
                 }
-                if (badFIOcount > goodFIOcount){
-                    fioResponse.setResult(0);
-                } else {
-                    fioResponse.setResult(1);
-                }
+
+
+
                 fioResponse.setReceived(true);
             }
 
@@ -68,7 +75,29 @@ public class FireRepository implements FireBaseRepository {
                 System.out.println("Error!");
             }
         });
-}
+    }
+
+    public void checkBlackWhiteLists(FioRequest fioRequest){ //Проверка в черно-белых списках
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("first");
+        ref.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot snapshot) {
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError error) {
+
+            }
+        });
+    }
+    private void updateStaticstics(){};
+    private void updateBlackList(FioResponse fioResponse)
+    {
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("tasks").child(fioResponse.getIdNewTask()).child("accs");
 
 
+
+    };
+    private void updateWhiteList(){};
 }

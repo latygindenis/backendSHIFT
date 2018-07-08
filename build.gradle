@@ -32,7 +32,12 @@ repositories {
 dependencies {
     compileOnly 'org.projectlombok:lombok:1.18.0'
     apt "org.projectlombok:lombok:1.18.0"
+    testCompile group: 'com.sun.jersey', name: 'jersey-client', version: '1.18.2'
     compile("org.springframework.boot:spring-boot-starter-web")
     compile("com.googlecode.json-simple:json-simple:1.1.1")
+    compile "javax.ws.rs:jsr311-api:1.1.1"
+    compile 'com.sun.jersey:jersey-server:1.13'
+    compile 'com.sun.jersey:jersey-core:1.13'
+    compile 'com.sun.jersey:jersey-servlet:1.13'
     implementation 'com.google.firebase:firebase-admin:6.2.0'
 }

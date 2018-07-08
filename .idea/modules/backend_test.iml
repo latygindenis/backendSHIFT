@@ -23,6 +23,11 @@
     <orderEntry type="module" module-name="backend_main" />
     <orderEntry type="library" name="Gradle: org.springframework.boot:spring-boot-starter-web:1.5.9.RELEASE" level="project" />
     <orderEntry type="library" name="Gradle: com.googlecode.json-simple:json-simple:1.1.1" level="project" />
+    <orderEntry type="library" name="Gradle: javax.ws.rs:jsr311-api:1.1.1" level="project" />
+    <orderEntry type="library" name="Gradle: com.sun.jersey:jersey-servlet:1.13" level="project" />
+    <orderEntry type="library" name="Gradle: com.sun.jersey:jersey-server:1.13" level="project" />
+    <orderEntry type="library" name="Gradle: com.sun.jersey:jersey-client:1.18.2" level="project" />
+    <orderEntry type="library" name="Gradle: com.sun.jersey:jersey-core:1.13" level="project" />
     <orderEntry type="library" name="Gradle: com.google.firebase:firebase-admin:6.2.0" level="project" />
     <orderEntry type="library" name="Gradle: org.springframework.boot:spring-boot-starter:1.5.9.RELEASE" level="project" />
     <orderEntry type="library" name="Gradle: org.springframework.boot:spring-boot-starter-tomcat:1.5.9.RELEASE" level="project" />
@@ -31,6 +36,7 @@
     <orderEntry type="library" name="Gradle: org.springframework:spring-webmvc:4.3.13.RELEASE" level="project" />
     <orderEntry type="library" name="Gradle: org.springframework:spring-web:4.3.13.RELEASE" level="project" />
     <orderEntry type="library" name="Gradle: junit:junit:4.12" level="project" />
+    <orderEntry type="library" name="Gradle: asm:asm:3.1" level="project" />
     <orderEntry type="library" name="Gradle: com.google.api-client:google-api-client-gson:1.23.0" level="project" />
     <orderEntry type="library" name="Gradle: com.google.cloud:google-cloud-storage:1.27.0" level="project" />
     <orderEntry type="library" name="Gradle: com.google.cloud:google-cloud-core-http:1.27.0" level="project" />
