@@ -46,7 +46,7 @@ public class FireRepository implements FireBaseRepository {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 int badFIOcount = 0, goodFIOcount = 0;
                 listOfCurTaskAccessors = new HashMap<>();
-                if (dataSnapshot.getChildrenCount() < 3) {
+                if (dataSnapshot.getChildrenCount() < 1) {
                     fioResponse.setResult(2);
                 } else {
                     for (DataSnapshot i : dataSnapshot.getChildren()) {
@@ -61,14 +61,18 @@ public class FireRepository implements FireBaseRepository {
                     if (badFIOcount > goodFIOcount) {
                         fioResponse.setResult(0);
                         updateRate(0);
+                        DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("blackwhitelist");
+                        ref.child(fioResponse.toString()).setValueAsync(0);
                     } else {
                         fioResponse.setResult(1);
                         updateRate(1);
+                        DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("blackwhitelist");
+                        ref.child(fioResponse.toString()).setValueAsync(1);
                     }
 
-                    DatabaseReference delReef = FirebaseDatabase.getInstance().getReference().child("tasks").child(fioResponse.getIdNewTask());
-                    delReef.removeValue((error, ref1) -> {
-                    }); // Удаление записи
+//                    DatabaseReference delReef = FirebaseDatabase.getInstance().getReference().child("tasks").child(fioResponse.getIdNewTask());
+//                    delReef.removeValue((error, ref1) -> {
+//                    }); // Удаление записи
                 }
                 fioResponse.setReceived(true);
             }
@@ -105,7 +109,7 @@ public class FireRepository implements FireBaseRepository {
         });
     }
 
-
+    @Override
     public void checkBlackWhiteLists(FioRequest fioRequest) { //Проверка в черно-белых списках
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("blackwhitelist");
         ref.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -124,4 +128,6 @@ public class FireRepository implements FireBaseRepository {
             }
         });
     }
+
+
 }

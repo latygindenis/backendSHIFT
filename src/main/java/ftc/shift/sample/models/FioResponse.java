@@ -8,7 +8,13 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 public class FioResponse {
+    String first;
+    String second;
+    String third;
     String idNewTask;
     Integer result;
     Boolean received = false;
+    public String toString(){
+        return first + " " + second + " " + third;
+    }
 }

@@ -51,8 +51,12 @@ public class TaskController {
             response.setData(fioResponse);
         } else {
             String idNewTask = fireRepository.createTask(fioRequest.getCountry(), fioRequest.getFirst(), fioRequest.getSecond(), fioRequest.getThird());
+            System.out.println("idNewTask " + idNewTask);
             fioResponse.setResult(result);
             fioResponse.setIdNewTask(idNewTask);
+            fioResponse.setFirst(fioRequest.getFirst());
+            fioResponse.setSecond(fioRequest.getSecond());
+            fioResponse.setThird(fioRequest.getThird());
             new Push(idNewTask, fioRequest).createPush();
         }
         response.setData(fioResponse);
