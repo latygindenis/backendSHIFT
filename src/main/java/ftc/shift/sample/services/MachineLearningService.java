@@ -1,24 +1,23 @@
 package ftc.shift.sample.services;
 
-import com.google.gson.Gson;
-import com.sun.jersey.api.client.Client;
-import com.sun.jersey.api.client.ClientResponse;
-import com.sun.jersey.api.client.WebResource;
-import com.sun.jersey.api.client.config.ClientConfig;
-import com.sun.jersey.api.client.config.DefaultClientConfig;
-import ftc.shift.sample.api.Resources;
 import ftc.shift.sample.models.FioRequest;
 import org.json.JSONObject;
 
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.UriBuilder;
-
 import static ftc.shift.sample.api.Resources.ML_ADDRESS;
 
+
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.client.RestTemplate;
+
 public class MachineLearningService {
-    private ClientConfig config = new DefaultClientConfig();
-    private Client client = Client.create(config);
-    private WebResource webResource = client.resource(UriBuilder.fromUri(ML_ADDRESS + "/test").build());
+    private String server = ML_ADDRESS + "/test";
+    private RestTemplate rest;
+    private HttpHeaders headers;
+    private HttpStatus status;
 
     public int getResult(FioRequest fioRequest) {
 
@@ -27,9 +26,19 @@ public class MachineLearningService {
         jsonObject.put("second", fioRequest.getSecond());
         jsonObject.put("third", fioRequest.getThird());
         jsonObject.put("country", fioRequest.getCountry());
-        ClientResponse responseML = webResource.type(MediaType.APPLICATION_JSON).post(ClientResponse.class, jsonObject.toString());
-        String str = responseML.getEntity(String.class);
-        jsonObject = new JSONObject(str);
+        rest = new RestTemplate();
+        headers = new HttpHeaders();
+        headers.add("Content-Type", "application/json");
+        headers.setContentType(org.springframework.http.MediaType.APPLICATION_JSON_UTF8);
+        HttpEntity<String> requestEntity = new HttpEntity<>(jsonObject.toString(), headers);
+        ResponseEntity<String> responseEntity = rest.exchange(server, HttpMethod.POST, requestEntity, String.class);
+        this.setStatus(responseEntity.getStatusCode());
+
+        jsonObject = new JSONObject(responseEntity.getBody());
+        System.out.println(jsonObject.getInt("result"));
         return jsonObject.getInt("result");
+    }
+    public void setStatus(HttpStatus status) {
+        this.status = status;
     }
 }

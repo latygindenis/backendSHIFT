@@ -25,13 +25,7 @@ sourceCompatibility = 1.8
 repositories {
     mavenCentral()
 }
-springBoot {
-    mainClass = 'SpringbootSampleApplication'
-    requiresUnpack = [
-            'com.sun.jersey:jersey-client',
-                       'com.sun.jersey:jersey-core',
-                       'com.sun.jersey:jersey-servlet']
-}
+
 
 
 dependencies {
@@ -45,4 +39,12 @@ dependencies {
     compile 'com.sun.jersey:jersey-core:1.13'
     compile 'com.sun.jersey:jersey-servlet:1.13'
     implementation 'com.google.firebase:firebase-admin:6.2.0'
+}
+
+springBoot {
+    mainClass = 'SpringbootSampleApplication'
+    requiresUnpack = [
+            'com.sun.jersey:jersey-client',
+            'com.sun.jersey:jersey-core',
+            'com.sun.jersey:jersey-servlet']
 }
