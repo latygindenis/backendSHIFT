@@ -1,13 +1,14 @@
 package ftc.shift.sample.api;
 
-
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.WebResource;
 import com.sun.jersey.api.client.config.ClientConfig;
 import com.sun.jersey.api.client.config.DefaultClientConfig;
+
 import ftc.shift.sample.models.FioRequest;
 import ftc.shift.sample.models.FioResponse;
+
 import ftc.shift.sample.repositories.FireRepository;
 import ftc.shift.sample.services.MachineLearningService;
 import ftc.shift.sample.services.Push;
@@ -27,7 +28,6 @@ public class TaskController {
 
     public TaskController() throws IOException {
     }
-
 
     @PostMapping(TASK_PATH + "/check/") // Отправка на ML от оператора
     public @ResponseBody
@@ -81,4 +81,23 @@ public class TaskController {
         response.setData(fioResponse);
         return response;
     }
+/*
+    @PostMapping(TASK_PATH + "/auth/sign_in/")
+    public @ResponseBody
+
+    @PostMapping(TASK_PATH + "/auth/sign_up/")
+    public @ResponseBody
+
+
+    @PostMapping(TASK_PATH + "/tasks/")
+    public @ResponseBody
+    BaseResponse<Task> allTask(@RequestBody Task task) {}
+
+    @PostMapping(TASK_PATH + "/result/")
+    public @ResponseBody
+
+    @PostMapping(TASK_PATH + "/profile/")
+    public @ResponseBody
+
+*/
 }
