@@ -26,7 +26,11 @@ repositories {
     mavenCentral()
 }
 springBoot {
-    requiresUnpack = [ "com.sun.jersey:*" ]
+    mainClass = 'SpringbootSampleApplication'
+    requiresUnpack = [
+            'com.sun.jersey:jersey-client',
+                       'com.sun.jersey:jersey-core',
+                       'com.sun.jersey:jersey-servlet']
 }
 
 
