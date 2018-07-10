@@ -14,7 +14,7 @@ buildscript {
 plugins {
     id 'net.ltgt.apt' version '0.10'
 }
-
+apply plugin: 'spring-boot'
 apply plugin: 'java'
 apply plugin: 'org.springframework.boot'
 
@@ -26,7 +26,9 @@ sourceCompatibility = 1.8
 repositories {
     mavenCentral()
 }
-
+springBoot {
+    requiresUnpack = [ "com.google.guava:guava" ]
+}
 
 
 dependencies {
