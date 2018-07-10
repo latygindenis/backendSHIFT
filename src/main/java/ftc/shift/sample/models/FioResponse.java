@@ -12,7 +12,7 @@ public class FioResponse {
     String second;
     String third;
     String idNewTask;
-    Integer result;
+    Integer result = -1;
     Boolean received = false;
     public String toString(){
         return first + " " + second + " " + third;

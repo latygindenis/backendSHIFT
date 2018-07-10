@@ -5,5 +5,5 @@ package ftc.shift.sample.api;
  */
 public class Resources {
     public static final String API_PREFIX = "/api/";
-    public static final String ML_ADDRESS = "http://127.0.0.1:5000";
+    public static final String ML_ADDRESS = "https://shiftml.herokuapp.com/";
 }

@@ -36,9 +36,12 @@ public class TaskController {
         FioResponse fioResponse = new FioResponse();
         System.out.println("Запрос!");
         fireRepository.checkBlackWhiteLists(fioRequest);
-        while(!fioRequest.getCheckedInList()){
+
+        while(!fioRequest.getCheckedInList()){ //Ждем проверки в черном/белом списке
 
         }
+
+
         if (fioRequest.getInListResult() != null){
             result = fioRequest.getInListResult();
         } else {
@@ -46,10 +49,10 @@ public class TaskController {
         }
 
 
-        if (result < 2) {
+        if (result == 0 || result == 1) {
             fioResponse.setResult(result);
             response.setData(fioResponse);
-        } else {
+        } else if (result == 2){
             String idNewTask = fireRepository.createTask(fioRequest.getCountry(), fioRequest.getFirst(), fioRequest.getSecond(), fioRequest.getThird());
             System.out.println("idNewTask " + idNewTask);
             fioResponse.setResult(result);
@@ -72,6 +75,9 @@ public class TaskController {
 
         }
         fioResponse.setReceived(null);
+        if(fioResponse.getResult() == -1){
+            response.setMessage("Нет такой задачи!");
+        }
         response.setData(fioResponse);
         return response;
     }
