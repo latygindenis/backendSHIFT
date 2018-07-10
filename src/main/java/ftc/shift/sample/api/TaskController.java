@@ -1,11 +1,6 @@
 package ftc.shift.sample.api;
 
 
-import com.sun.jersey.api.client.Client;
-import com.sun.jersey.api.client.ClientResponse;
-import com.sun.jersey.api.client.WebResource;
-import com.sun.jersey.api.client.config.ClientConfig;
-import com.sun.jersey.api.client.config.DefaultClientConfig;
 import ftc.shift.sample.models.FioRequest;
 import ftc.shift.sample.models.FioResponse;
 import ftc.shift.sample.repositories.FireRepository;
@@ -14,7 +9,6 @@ import ftc.shift.sample.services.Push;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
-import java.util.Random;
 
 @RestController
 public class TaskController {
