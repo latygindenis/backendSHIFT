@@ -16,7 +16,6 @@ plugins {
 }
 apply plugin: 'spring-boot'
 apply plugin: 'java'
-apply plugin: 'org.springframework.boot'
 
 group = 'ftc.shift'
 version = '0.0.1'
@@ -27,7 +26,7 @@ repositories {
     mavenCentral()
 }
 springBoot {
-    requiresUnpack = [ "com.google.guava:guava" ]
+    requiresUnpack = [ "com.sun.jersey:*" ]
 }
 
 
