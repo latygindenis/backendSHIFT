@@ -25,8 +25,14 @@ sourceCompatibility = 1.8
 repositories {
     mavenCentral()
 }
-
-
+springBoot {
+    executable = true
+    mainClass = "ftc.shift.sample.SpringbootSampleApplication"
+}
+jar {
+    baseName = 'SpringbootSampleApplication'
+    version = '1.0'
+}
 
 dependencies {
     compileOnly 'org.projectlombok:lombok:1.18.0'
@@ -41,10 +47,3 @@ dependencies {
     implementation 'com.google.firebase:firebase-admin:6.2.0'
 }
 
-springBoot {
-    mainClass = 'SpringbootSampleApplication'
-    requiresUnpack = [
-            'com.sun.jersey:jersey-client',
-            'com.sun.jersey:jersey-core',
-            'com.sun.jersey:jersey-servlet']
-}

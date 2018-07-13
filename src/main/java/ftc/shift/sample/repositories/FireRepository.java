@@ -3,21 +3,31 @@ package ftc.shift.sample.repositories;
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuthException;
+import com.google.firebase.auth.UserRecord;
+import com.google.firebase.auth.UserRecord.CreateRequest;
 import com.google.firebase.database.*;
-import ftc.shift.sample.models.FioRequest;
-import ftc.shift.sample.models.FioResponse;
-import ftc.shift.sample.models.Task;
+import ftc.shift.sample.models.*;
 
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Map;
+import java.util.List;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Semaphore;
 
 public class FireRepository implements FireBaseRepository {
     private HashMap<String, Integer> listOfCurTaskAccessors;
-    private HashSet<String> listOfTasks;
+    HashSet<String> listOfTasksId;
+
+    public List<Task> getListOfTasks() {
+        return listOfTasks;
+    }
+
+    ArrayList<Task> listOfTasks;
 
     public FireRepository() throws IOException {
         FileInputStream serviceAccount = new FileInputStream("src\\main\\resources\\shift-d39fd-firebase-adminsdk-yvm27-01e0791aa1.json");
@@ -30,11 +40,21 @@ public class FireRepository implements FireBaseRepository {
         parsingCurTasks();
     }
 
+    public String signUp(SignUp signUp) throws FirebaseAuthException {
+        CreateRequest request = new CreateRequest()
+                .setEmail(signUp.getEmail())
+                .setPassword(signUp.getPassword());
+        UserRecord userRecord = FirebaseAuth.getInstance().createUser(request);
+
+        System.out.println("Successfully created new user: " + userRecord.getUid());
+        return userRecord.getUid();
+    }
+
     @Override
     public String createTask(String country, String first, String second, String third) {
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("tasks");
         DatabaseReference taskId = ref.push();
-        Task task = new Task(0, country, first, second, third, taskId.getKey());
+        Task task = new Task(null, 0, country, first, second, third, taskId.getKey());
         taskId.setValueAsync(task);
         return taskId.getKey();
     }
@@ -42,7 +62,7 @@ public class FireRepository implements FireBaseRepository {
 
     @Override
     public void checkCurTask(FioResponse fioResponse) {
-        if (!listOfTasks.contains(fioResponse.getIdNewTask())) { //Проверка на наличие задачи в базе
+        if (!listOfTasksId.contains(fioResponse.getIdNewTask())) { //Проверка на наличие задачи в базе
             System.out.println("Задачи нету!");
             fioResponse.setResult(-1);
             fioResponse.setReceived(true);
@@ -126,6 +146,10 @@ public class FireRepository implements FireBaseRepository {
         });
     }
 
+    /**
+     *
+     * @param fioRequest
+     */
     @Override
     public void checkBlackWhiteLists(FioRequest fioRequest) { //Проверка в черно-белых списках
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("blackwhitelist");
@@ -151,11 +175,13 @@ public class FireRepository implements FireBaseRepository {
         ref.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot snapshot) {
-                listOfTasks = new HashSet<>();
+                listOfTasksId = new HashSet<>();
+                listOfTasks = new ArrayList<>();
                 for (DataSnapshot dataSnapshot: snapshot.getChildren()){
-                    listOfTasks.add(dataSnapshot.getKey());
+                    listOfTasksId.add(dataSnapshot.getKey());
+                    Task newTask = dataSnapshot.getValue(Task.class);
+                    listOfTasks.add(newTask);
                 }
-                snapshot.getChildren();
             }
 
             @Override
@@ -163,5 +189,46 @@ public class FireRepository implements FireBaseRepository {
 
             }
         });
+    }
+
+    public void updateResult (DoneTaskByAcc doneTaskByAcc){
+        DatabaseReference reference =  FirebaseDatabase.getInstance().getReference().child("tasks");
+        reference.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot snapshot) {
+                if (snapshot.child(doneTaskByAcc.getTaskId()) != null){
+                    DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("tasks")
+                            .child(doneTaskByAcc.getTaskId()).child("accs").child(doneTaskByAcc.getAccId());
+                    ref.setValueAsync(doneTaskByAcc.getResult());
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError error) {
+
+            }
+        });
+    }
+
+    public Acc getAccProfile(String accId) throws InterruptedException {
+        final Semaphore semaphore = new Semaphore(0);
+        DatabaseReference reference =  FirebaseDatabase.getInstance().getReference().child("accs");
+        Acc acc = new Acc();
+        reference.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot snapshot) {
+                if (snapshot.hasChild(accId)){
+                   acc.updateAcc(snapshot.child(accId).getValue(Acc.class));
+                }
+                semaphore.release();
+            }
+
+            @Override
+            public void onCancelled(DatabaseError error) {
+
+            }
+        });
+        semaphore.acquire();
+        return acc;
     }
 }

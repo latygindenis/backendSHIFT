@@ -1,14 +1,17 @@
 package ftc.shift.sample.api;
 
 
-import ftc.shift.sample.models.FioRequest;
-import ftc.shift.sample.models.FioResponse;
+import com.google.firebase.auth.FirebaseAuthException;
+import ftc.shift.sample.models.*;
 import ftc.shift.sample.repositories.FireRepository;
 import ftc.shift.sample.services.MachineLearningService;
 import ftc.shift.sample.services.Push;
+import org.json.JSONObject;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 @RestController
 public class TaskController {
@@ -75,4 +78,91 @@ public class TaskController {
         response.setData(fioResponse);
         return response;
     }
+
+    @PostMapping(TASK_PATH + "/tasks/")
+    public @ResponseBody
+    BaseResponse<List<Task>> getNotAnsweredTasks(@RequestBody String accId) {
+        BaseResponse<List<Task>> response = new BaseResponse<>();
+        JSONObject jsonObject = new JSONObject(accId);
+        String id = jsonObject.getString("id");
+        ArrayList<Task> listOfNotAsweredTasks = new ArrayList<>();
+
+        for(Task task:fireRepository.getListOfTasks()){
+
+            if (task.getAccs()!=null){
+                if (!task.getAccs().containsKey(id)){
+                    listOfNotAsweredTasks.add(task);
+                }
+
+            } else {
+                listOfNotAsweredTasks.add(task);
+            }
+        }
+        response.setData(listOfNotAsweredTasks);
+        return response;
+    }
+
+
+    @PostMapping(TASK_PATH + "/auth/sign_up/")
+    public @ResponseBody
+    BaseResponse<String> signUp (@RequestBody SignUp signUp) throws FirebaseAuthException {
+        BaseResponse<String> response = new BaseResponse<>();
+        response.setData(fireRepository.signUp(signUp));
+        return response;
+    }
+
+    @PostMapping(TASK_PATH + "/result/")
+    public @ResponseBody
+    BaseResponse <String> updateResult(@RequestBody DoneTaskByAcc doneTaskByAcc){
+        BaseResponse<String> response = new BaseResponse<>();
+        fireRepository.updateResult(doneTaskByAcc);
+//        response.setData("OK");
+        return response;
+    }
+    @PostMapping(TASK_PATH + "/profile/")
+    public @ResponseBody
+    BaseResponse <Acc> getProfile(@RequestBody String accId) throws InterruptedException {
+        BaseResponse<Acc> response = new BaseResponse<>();
+        String id = new JSONObject(accId).getString("accId");
+        Acc acc = fireRepository.getAccProfile(id);
+        response.setData(acc);
+        return response;
+    }
+
+
+
+
+//    @PostMapping(TASK_PATH + "/auth/sign_in/")
+//    public @ResponseBody
+//    BaseResponse<String> signIn (@RequestBody SignIn signIn) throws FirebaseAuthException {
+//        BaseResponse<String> response = new BaseResponse<>();
+//        response.setData(fireRepository.signIn(signIn));
+//        return response;
+//    }
+
+
+
+//    @PostMapping(TASK_PATH + "/auth/sign_in/")
+//    public @ResponseBody
+
+/*
+    @PostMapping(TASK_PATH + "/auth/sign_in/")
+    public @ResponseBody
+
+    @PostMapping(TASK_PATH + "/auth/sign_up/")
+    public @ResponseBody
+
+
+    @PostMapping(TASK_PATH + "/tasks/") done
+    public @ResponseBody
+    BaseResponse<Task> allTask(@RequestBody Task task) {}
+
+    @PostMapping(TASK_PATH + "/result/")
+    public @ResponseBody
+
+    @PostMapping(TASK_PATH + "/profile/")
+    public @ResponseBody
+
+*/
+
 }
